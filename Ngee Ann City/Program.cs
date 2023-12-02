@@ -4,61 +4,83 @@ using System.Linq.Expressions;
 using System;
 using System.Collections.Generic;
 
+// Set game variables
 IDictionary<string, int> game_vars = new Dictionary<string, int>();
 game_vars.Add("num_buildings", 0);
-game_vars.Add("score", 0);
 game_vars.Add("coins", 16);
+game_vars.Add("score", 0);
+game_vars.Add("turn", 1);
 
-List<string> buildings = new List<string>();
-buildings.Add("R");
-buildings.Add("C");
-buildings.Add("I");
-buildings.Add("O");
-buildings.Add("*");
+List<char> buildings = new List<char>();
+buildings.Add('R');
+buildings.Add('C');
+buildings.Add('I');
+buildings.Add('O');
+buildings.Add('*');
 
-void DrawField(int rows, int columns)
+static char?[][] DrawField()
 {
-    char?[][] grid = new char?[rows][];
-    for (int i = 0; i < rows; i++)
+    char?[][] field = new char?[20][];
+
+    // Initialize the grid with null values
+    for (int i = 0; i < 20; i++)
     {
-        grid[i] = new char?[columns];
+        field[i] = new char?[20];
+        for (int j = 0; j < 20; j++)
+        {
+            field[i][j] = null;
+        }
     }
 
+    return field;
+}
+
+// DrawField(row,col)
+// Draws a 20x20 field to place buildings
+static void ShowField(char?[][] field)
+{
     Console.Write("    ");
-    for (int i = 1; i <= columns; i++)
+    for (int i = 1; i <= field[0].Length; i++)
     {
         Console.Write(String.Format("{0,4}",$"{i,3}"));
     }
     Console.WriteLine();
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < field.Length; i++)
     {
-        Console.Write("    ");
+        Console.Write((char)('A' + i) + "   ");
 
-        for (int j = 0; j < columns; j++)
+        for (int j = 0; j < field[i].Length; j++)
         {
-            grid[i][j] = null;
             Console.Write("+---");
         }
         Console.WriteLine("+");
 
-        Console.Write((char)('A' + i) + "   ");
-        Console.Write("");
-        for (int j = 0; j < columns; j++)
+        Console.Write("    ");
+        for (int j = 0; j < field[i].Length; j++)
         {
-            Console.Write("|   ");
+            if (field[i][j] == null)
+            {
+                Console.Write("|   ");
+            }
+            else
+            {
+                Console.Write($"| {field[i][j]} ");
+            }
         }
         Console.WriteLine("|");
     }
 
     Console.Write("    ");
-    for (int j = 0; j < columns; j++)
+    for (int j = 0; j < field[0].Length; j++)
     {
         Console.Write("+---");
     }
     Console.WriteLine("+");
 }
 
+// RandomBuilding()
+// Function to get a random building from the buidlings list
 static T RandomBuidling<T>(List<T> list)
 {
     var random = new Random();
@@ -66,19 +88,45 @@ static T RandomBuidling<T>(List<T> list)
     return list[index];
 }
 
-string building1 = RandomBuidling(buildings);
-string building2 = RandomBuidling(buildings);
+char building1 = RandomBuidling(buildings);
+char building2 = RandomBuidling(buildings);
+char spawn1 = RandomBuidling(buildings);
+char spawn2 = RandomBuidling(buildings);
 
+void SpawnBuilding(char?[][] field)
+{
+    Random rnd = new Random();
+    int pos1 = rnd.Next(0, 19);
+    int pos2 = rnd.Next(0, 19);
+    int pos3 = rnd.Next(0, 19);
+    int pos4 = rnd.Next(0, 19);
+    field[pos1][pos2] = spawn1;
+    field[pos3][pos4] = spawn2;
+    ShowField(field);
+}
+
+static void PlaceBuilding(string building, string pos)
+{
+    char[] bpos = pos.ToCharArray();
+}
+
+
+// GameMenu()
+// Displays game menu
 void GameMenu()
 {
     Console.Write("\nNumber Of Buildings: "+game_vars["num_buildings"]+"   ");
     Console.Write("Coins: "+game_vars["coins"]+"   ");
-    Console.WriteLine("Score: "+game_vars["score"]+"   ");
+    Console.Write("Score: "+game_vars["score"]+"   ");
+    Console.WriteLine("Turn: " + game_vars["turn"]);
     Console.Write("1.Building: " + building1 + "   ");
     Console.Write("2.Building: " + building2 + "   ");
     Console.WriteLine("0.Exit Game");
+    Console.WriteLine("Each building costs 1 coin");
 }
 
+// Menu()
+// Displays start menu
 void Menu()
 {
     Console.WriteLine("------------------------");
@@ -89,17 +137,23 @@ void Menu()
     Console.WriteLine("------------------------");
 }
 
-
+// InitialiseGame()
+// Sets the default game variables for new game
 void InitialiseGame()
 {
     game_vars["num_buildings"] = 0;
     game_vars["coins"] = 16;
     game_vars["score"] = 0;
+    game_vars["turn"] = 1;
 }
+
+// StartGame()
+// Starts the game
 
 void StartGame()
 {
-    DrawField(20,20);
+    char?[][]field = DrawField();
+    SpawnBuilding(field);
     GameMenu();
 }
 
@@ -118,9 +172,9 @@ void SaveGame()
 
 }
 
-int i = 1;
-char c = (char)i;
-Console.WriteLine(c);
+//-------------------------------------------------------------------------------------
+//                                    MAIN GAME
+//-------------------------------------------------------------------------------------
 
 while (true)
 {
@@ -133,7 +187,6 @@ while (true)
         if (Choice == 1)
         {
             InitialiseGame();
-            break;
         }
         else if (Choice == 2)
         {
@@ -153,52 +206,50 @@ while (true)
         {
             Console.WriteLine("This option is not available.");
         }
-    }
-    catch
-    {
-        Console.WriteLine("Please enter a number");
-    }
-}
-
-while (true)
-{
-    DrawField(20,20);
-    GameMenu();
-    Console.Write("Please choose your option: ");
-    try
-    {
-        int Choice = Convert.ToInt32(Console.ReadLine());
-        if(Choice == 1)
+        while(Choice == 1)
         {
-            Console.Write("Where would you like to place " + building1 + ": ");
-            Console.ReadLine();
-        }
-        else if(Choice == 2)
-        {
-            Console.Write("Where would you like to place " + building2 + ": ");
-            Console.ReadLine();
-        }
-        else if (Choice == 0)
-        {
-            Console.Write("Would you like to save your game? (y/n): ");
-            string choice = Console.ReadLine();
-            if (choice == "y")
+            StartGame();
+            Console.Write("Please choose your option: ");
+            try
             {
-                SaveGame();
+                int choice = Convert.ToInt32(Console.ReadLine());
+                if (choice == 1)
+                {
+                    Console.Write("Where would you like to place " + building1 + ": ");
+                    Console.ReadLine();
+                }
+                else if (choice == 2)
+                {
+                    Console.Write("Where would you like to place " + building2 + ": ");
+                    Console.ReadLine();
+                }
+                else if (choice == 0)
+                {
+                    Console.Write("Would you like to save your game? (y/n): ");
+                    string option = Console.ReadLine();
+                    if (option == "y")
+                    {
+                        SaveGame();
+                    }
+                    else if (option == "n")
+                    {
+                        Console.WriteLine("Thanks for playing!");
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter valid option");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Please enter a number");
+                }
             }
-            else if (choice == "n")
+            catch
             {
-                Console.WriteLine("Thanks for playing!");
-                break;
+                Console.WriteLine("Please enter a number");
             }
-            else
-            {
-                Console.WriteLine("Please enter valid option");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Please enter a number");
         }
     }
     catch
