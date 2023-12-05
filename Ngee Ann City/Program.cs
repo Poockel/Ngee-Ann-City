@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using System.Linq.Expressions;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text;
 
 // Set game variables
 IDictionary<string, int> game_vars = new Dictionary<string, int>();
@@ -159,7 +161,29 @@ void StartGame()
 
 void LoadSaved()
 {
+    try
+    {
+        string path = "saved_game.json"; // Path to the saved game file
 
+        if (File.Exists(path))
+        {
+            string gameStateJson = File.ReadAllText(path); // Read the file content
+
+            // Deserialize the JSON string back into the game_vars dictionary
+            game_vars = JsonSerializer.Deserialize<Dictionary<string, int>>(gameStateJson);
+
+            Console.WriteLine("Game loaded successfully!");
+            StartGame();
+        }
+        else
+        {
+            Console.WriteLine("No saved game found.");
+        }
+    }
+    catch (IOException e)
+    {
+        Console.WriteLine("Error loading the game: " + e.Message);
+    }
 }
 
 void Displayhighscore()
@@ -169,8 +193,24 @@ void Displayhighscore()
 
 void SaveGame()
 {
+    string path = "saved_game.json";
 
+    try
+    {
+        // Serialize game state to JSON
+        string gameStateJson = JsonSerializer.Serialize(game_vars);
+
+        // Write the serialized game state to the file
+        File.WriteAllText(path, gameStateJson);
+
+        Console.WriteLine("Game saved successfully!");
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("Error saving the game: " + e.Message);
+    }
 }
+
 
 //-------------------------------------------------------------------------------------
 //                                    MAIN GAME
@@ -230,6 +270,8 @@ while (true)
                     if (option == "y")
                     {
                         SaveGame();
+                        Console.WriteLine("Thanks for playing!");
+                        break;
                     }
                     else if (option == "n")
                     {
