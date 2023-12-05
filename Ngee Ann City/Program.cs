@@ -246,6 +246,7 @@ while (true)
         {
             Console.WriteLine("This option is not available.");
         }
+
         while(Choice == 1)
         {
             StartGame();
