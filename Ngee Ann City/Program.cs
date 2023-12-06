@@ -237,6 +237,12 @@ public class Program
             }
         }
 
+        void ExitGame()
+        {
+            Console.WriteLine("Exiting the game. Goodbye!");
+            Environment.Exit(0);
+        }
+
 
         //-------------------------------------------------------------------------------------
         //                                    MAIN GAME
@@ -269,7 +275,7 @@ public class Program
                 }
                 else if (Choice == 0)
                 {
-                    Console.WriteLine("Thanks for playing!");
+                    ExitGame();
                     break;
                 }
                 else
@@ -319,7 +325,7 @@ public class Program
                             }
                             else if (option == "n")
                             {
-                                Console.WriteLine("Thanks for playing!");
+                                ExitGame();
                                 break;
                             }
                             else
