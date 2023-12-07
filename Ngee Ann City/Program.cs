@@ -256,10 +256,20 @@ public class Program
         int Build()
         {
             Console.WriteLine("1. Build");
-            Console.WriteLine("2. Exit to main menu");
+            Console.WriteLine("0. Exit to main menu");
             Console.Write("Please choose an option: ");
-            int OptionB = Convert.ToInt32(Console.ReadLine());
-            return OptionB;
+            while (true)
+            {
+                try
+                {
+                    int OptionB = Convert.ToInt32(Console.ReadLine());
+                    return OptionB;
+                }
+                catch
+                {
+                    Console.WriteLine("Enter an integer.");
+                }
+            }
         }
 
 
@@ -302,37 +312,71 @@ public class Program
                     Console.WriteLine("This option is not available.");
                 }
 
-                while (Choice == 1^ Choice == 2)
+                while (Choice == 1 ^ Choice == 2)
                 {
-                    
-                    Console.Write("Please choose your option: ");
                     try
                     {
-                        int choice = Convert.ToInt32(Console.ReadLine());
-                        if (choice == 1)
+                        int OptionB = Build();
+                        if (OptionB == 1)
                         {
-                            Console.Write("Where would you like to place " + building1 + ": ");
-                            string position = Console.ReadLine();
-
-                            // Ensure field is initialized before calling PlaceBuilding
-                            if (field != null)
+                            Console.Write("Please choose your option: ");
+                            try
                             {
-                                PlaceBuilding(building1, position, field);
-                                GameMenu();
-                            }
-                            else
-                            {
-                                Console.WriteLine("Field is not initialized. Cannot place the building.");
-                                GameMenu();
-                            }
+                                int choice = Convert.ToInt32(Console.ReadLine());
+                                if (choice == 1)
+                                {
+                                    Console.Write("Where would you like to place " + building1 + ": ");
+                                    string position = Console.ReadLine();
 
+                                    // Ensure field is initialized before calling PlaceBuilding
+                                    if (field != null)
+                                    {
+                                        PlaceBuilding(building1, position, field);
+                                        GameMenu();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Field is not initialized. Cannot place the building.");
+                                        GameMenu();
+                                    }
+
+                                }
+                                else if (choice == 2)
+                                {
+                                    Console.Write("Where would you like to place " + building2 + ": ");
+                                    Console.ReadLine();
+                                }
+                                else if (choice == 0)
+                                {
+                                    Console.Write("Would you like to save your game? (y/n): ");
+                                    string option = Console.ReadLine();
+                                    if (option == "y")
+                                    {
+                                        SaveGame();
+                                        Console.WriteLine("Thanks for playing!");
+                                        break;
+                                    }
+                                    else if (option == "n")
+                                    {
+                                        ExitGame();
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Please enter valid option");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Please enter a number");
+                                }
+                            }
+                            catch
+                            {
+                                Console.WriteLine("Please enter a number");
+                            }
                         }
-                        else if (choice == 2)
-                        {
-                            Console.Write("Where would you like to place " + building2 + ": ");
-                            Console.ReadLine();
-                        }
-                        else if (choice == 0)
+                        else if (OptionB == 0)
                         {
                             Console.Write("Would you like to save your game? (y/n): ");
                             string option = Console.ReadLine();
@@ -351,16 +395,18 @@ public class Program
                             {
                                 Console.WriteLine("Please enter valid option");
                             }
+                            break;
                         }
                         else
                         {
-                            Console.WriteLine("Please enter a number");
+                            Console.WriteLine("This option is not available.");
                         }
                     }
                     catch
                     {
                         Console.WriteLine("Please enter a number");
                     }
+
                 }
             }
             catch
