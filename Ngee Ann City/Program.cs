@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 public class Program
 {
@@ -164,7 +166,7 @@ public class Program
 
         // InitialiseGame()
         // Sets the default game variables for new game
-        void InitialiseGame()
+        void InitialiseGame(IDictionary<string, int> game_vars)
         {
             game_vars["num_buildings"] = 0;
             game_vars["coins"] = 16;
@@ -191,13 +193,16 @@ public class Program
 
                 if (File.Exists(path))
                 {
-                    string gameStateJson = File.ReadAllText(path); // Read the file content
+                    string gameJson = File.ReadAllText(path); // Read the file content
 
                     // Deserialize the JSON string back into the game_vars dictionary
-                    game_vars = JsonSerializer.Deserialize<Dictionary<string, int>>(gameStateJson);
+                    var gamedata = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(gameJson);
+
+                    char?[][] field = gamedata["Field"].ToObject<char?[][]>();
+                    Dictionary<string, int> game_vars = gamedata["GameVar"].ToObject < Dictionary<string, int> > ();
 
                     Console.WriteLine("Game loaded successfully!");
-                    InitialiseGame();
+                    InitialiseGame(game_vars);
                     ShowField(field);
                 }
                 else
@@ -220,14 +225,19 @@ public class Program
         void SaveGame()
         {
             string path = "saved_game.json";
+            var gamedata = new
+            {
+                GameVar = game_vars,
+                Field = field
+            };
 
             try
             {
                 // Serialize game state to JSON
-                string gameStateJson = JsonSerializer.Serialize(game_vars);
+                string gameJson = Newtonsoft.Json.JsonConvert.SerializeObject(gamedata);
 
                 // Write the serialized game state to the file
-                File.WriteAllText(path, gameStateJson);
+                File.WriteAllText(path, gameJson);
 
                 Console.WriteLine("Game saved successfully!");
             }
@@ -235,6 +245,12 @@ public class Program
             {
                 Console.WriteLine("Error saving the game: " + e.Message);
             }
+        }
+
+        void ExitGame()
+        {
+            Console.WriteLine("Exiting the game. Goodbye!");
+            Environment.Exit(0);
         }
 
         int Build()
@@ -264,13 +280,13 @@ public class Program
                 {
                     StartGame();
                     GameMenu();
-                    InitialiseGame();
+                    InitialiseGame(game_vars);
                 }
                 else if (Choice == 2)
                 {
                     LoadSaved();
                     GameMenu();
-                    InitialiseGame();
+                    InitialiseGame(game_vars);
                 }
                 else if (Choice == 3)
                 {
@@ -278,7 +294,7 @@ public class Program
                 }
                 else if (Choice == 0)
                 {
-                    Console.WriteLine("Thanks for playing!");
+                    ExitGame();
                     break;
                 }
                 else
@@ -328,7 +344,7 @@ public class Program
                             }
                             else if (option == "n")
                             {
-                                Console.WriteLine("Thanks for playing!");
+                                ExitGame();
                                 break;
                             }
                             else
