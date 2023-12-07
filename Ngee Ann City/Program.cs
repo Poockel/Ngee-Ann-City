@@ -237,6 +237,15 @@ public class Program
             }
         }
 
+        int Build()
+        {
+            Console.WriteLine("1. Build");
+            Console.WriteLine("2. Exit to main menu");
+            Console.Write("Please choose an option: ");
+            int OptionB = Convert.ToInt32(Console.ReadLine());
+            return OptionB;
+        }
+
 
         //-------------------------------------------------------------------------------------
         //                                    MAIN GAME
