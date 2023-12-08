@@ -156,6 +156,7 @@ public class Program
         // Displays start menu
         void Menu()
         {
+            Console.WriteLine("Welcome to Ngee Ann City!");
             Console.WriteLine("------------------------");
             Console.WriteLine("1. Start a new game");
             Console.WriteLine("2. Load saved game");
