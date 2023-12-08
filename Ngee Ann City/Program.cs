@@ -20,12 +20,12 @@ public class Program
         game_vars.Add("score", 0);
         game_vars.Add("turn", 1);
 
-        List<char> buildings = new List<char>();
-        buildings.Add('R');
-        buildings.Add('C');
-        buildings.Add('I');
-        buildings.Add('O');
-        buildings.Add('*');
+        IDictionary<string, char> buildings = new Dictionary<string, char>();
+        buildings.Add("Residential",'R');
+        buildings.Add("Commercial",'C');
+        buildings.Add("Industry",'I');
+        buildings.Add("Park",'O');
+        buildings.Add("Road",'*');
 
 
 
@@ -95,17 +95,18 @@ public class Program
 
         // RandomBuilding()
         // Function to get a random building from the buidlings list
-        static T RandomBuidling<T>(List<T> list)
+        static KeyValuePair<TKey, TValue> RandomBuilding<TKey, TValue>(IDictionary<TKey,TValue> dict)
         {
-            var random = new Random();
-            int index = random.Next(list.Count);
-            return list[index];
+            Random random = new Random();
+            int index = random.Next(0, dict.Count);
+            return dict.ElementAt(index);
         }
 
-        char building1 = RandomBuidling(buildings);
-        char building2 = RandomBuidling(buildings);
-        char spawn1 = RandomBuidling(buildings);
-        char spawn2 = RandomBuidling(buildings);
+
+        KeyValuePair<string, char> building1 = RandomBuilding(buildings);
+        KeyValuePair<string, char> building2 = RandomBuilding(buildings);
+        KeyValuePair<string, char> spawn1 = RandomBuilding(buildings);
+        KeyValuePair<string, char> spawn2 = RandomBuilding(buildings);
 
         void SpawnBuilding(char?[][] field)
         {
@@ -114,8 +115,8 @@ public class Program
             int pos2 = rnd.Next(0, 19);
             int pos3 = rnd.Next(0, 19);
             int pos4 = rnd.Next(0, 19);
-            field[pos1][pos2] = spawn1;
-            field[pos3][pos4] = spawn2;
+            field[pos1][pos2] = spawn1.Value;
+            field[pos3][pos4] = spawn2.Value;
         }
 
         void PlaceBuilding(char building, string pos, char?[][] field)
@@ -146,8 +147,8 @@ public class Program
             Console.Write("Coins: " + game_vars["coins"] + "   ");
             Console.Write("Score: " + game_vars["score"] + "   ");
             Console.WriteLine("Turn: " + game_vars["turn"]);
-            Console.Write("1.Building: " + building1 + "   ");
-            Console.Write("2.Building: " + building2 + "   ");
+            Console.Write("1." + building1.Key + ": " + building1.Value + "   ");
+            Console.Write("2." + building2.Key + ": " + building2.Value + "   ");
             Console.WriteLine("0.Exit Game");
             Console.WriteLine("Each building costs 1 coin");
         }
@@ -256,15 +257,15 @@ public class Program
 
         int Build()
         {
-            Console.WriteLine("1. Build");
-            Console.WriteLine("0. Exit to main menu");
+            //Console.WriteLine("1. Build");
+            //Console.WriteLine("0. Exit to main menu");
             Console.Write("Please choose an option: ");
             while (true)
             {
                 try
                 {
-                    int OptionB = Convert.ToInt32(Console.ReadLine());
-                    return OptionB;
+                    //int OptionB = Convert.ToInt32(Console.ReadLine());
+                    //return OptionB;
                 }
                 catch
                 {
@@ -320,19 +321,19 @@ public class Program
                         int OptionB = Build();
                         if (OptionB == 1)
                         {
-                            Console.Write("Please choose your option: ");
+                            //Console.Write("Please choose your option: ");
                             try
                             {
                                 int choice = Convert.ToInt32(Console.ReadLine());
                                 if (choice == 1)
                                 {
-                                    Console.Write("Where would you like to place " + building1 + ": ");
+                                    Console.Write("Where would you like to place " + building1.Value + ": ");
                                     string position = Console.ReadLine();
 
                                     // Ensure field is initialized before calling PlaceBuilding
                                     if (field != null)
                                     {
-                                        PlaceBuilding(building1, position, field);
+                                        PlaceBuilding(building1.Value, position, field);
                                         GameMenu();
                                     }
                                     else
