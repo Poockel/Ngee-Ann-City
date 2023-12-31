@@ -138,7 +138,7 @@ public class Program
             }
         }
 
-       
+
         // GameMenu()
         // Displays game menu
         void GameMenu()
@@ -205,7 +205,7 @@ public class Program
                     var gamedata = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(gameJson);
 
                     char?[][] field = gamedata["Field"].ToObject<char?[][]>();
-                    Dictionary<string, int> game_vars = gamedata["GameVar"].ToObject < Dictionary<string, int> > ();
+                    Dictionary<string, int> game_vars = gamedata["GameVar"].ToObject<Dictionary<string, int>>();
 
                     Console.WriteLine("Game loaded successfully!");
                     InitialiseGame(game_vars);
@@ -226,7 +226,7 @@ public class Program
         {
             char building = field[row][col] ?? ' ';
 
-            
+
 
             if (building == 'R') // Residential
             {
@@ -355,29 +355,43 @@ public class Program
         }
 
 
-        void Displayhighscore()
+        static void RecordScore(int score)
         {
 
+            string filePath = "scores.json";
+            using (StreamWriter writer = File.AppendText(filePath))
+            {
+                writer.WriteLine(score);
+            }
         }
 
-        void SaveGame()
-        {
-            string path = "saved_game.json";
-            var gamedata = new
-            {
-                GameVar = game_vars,
-                Field = field
-            };
 
+        void Displayhighscore()
+        {
             try
             {
-                // Serialize game state to JSON
-                string gameJson = Newtonsoft.Json.JsonConvert.SerializeObject(gamedata);
 
-                // Write the serialized game state to the file
-                File.WriteAllText(path, gameJson);
-                Console.Write("Your final score is: " + game_vars["score"] + "   \n");
-                Console.WriteLine("Game saved successfully!");
+                string filePath = "scores.json";
+
+                List<int> allScores = File.ReadAllLines(filePath)
+                                          .Select(line => int.Parse(line))
+                                          .ToList();
+
+                List<int> sortedScores = allScores.OrderByDescending(s => s).ToList();
+
+                if (sortedScores.Count > 0)
+                {
+                    Console.WriteLine("Top Ten High Scores:");
+                    for (int i = 0; i < Math.Min(10, sortedScores.Count); i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {sortedScores[i]}");
+                    }
+                }
+
+                else if (sortedScores.Count == 0)
+                {
+                    Console.Write("No high score records found :("+"\n\n");
+                }
             }
             catch (Exception e)
             {
@@ -385,143 +399,169 @@ public class Program
             }
         }
 
-        void ExitCurrentGame()
-        {
 
-            Console.Write("Your final score is: " + game_vars["score"] + "   \n");
-            Console.WriteLine("Exiting the game. Goodbye!\n");
-        }
+            void SaveGame()
+            {
+                string path = "saved_game.json";
+                var gamedata = new
+                {
+                    GameVar = game_vars,
+                    Field = field
+                };
 
-        void ExitGame()
-        {
+                try
+                {
+                    // Serialize game state to JSON
+                    string gameJson = Newtonsoft.Json.JsonConvert.SerializeObject(gamedata);
 
-            Console.WriteLine("Exiting Ngee Ann City. Hope to see you again!\n");
-        }
+                    // Write the serialized game state to the file
+                    File.WriteAllText(path, gameJson);
+                    Console.Write("Your final score is: " + game_vars["score"] + "   \n");
+                    Console.WriteLine("Game saved successfully!");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error saving the game: " + e.Message);
+                }
+            }
 
-
-        //-------------------------------------------------------------------------------------
-        //                                    MAIN GAME
-        //-------------------------------------------------------------------------------------
-
-        while (true)
-        {
-            
-
-
-            Menu();
-            Console.Write("Select Option: ");
-            try
+            void ExitCurrentGame()
             {
 
-                int Choice = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Your final score is: " + game_vars["score"] + "   \n");
+                Console.WriteLine("Exiting the game. Goodbye!\n");
+            }
 
-                if (Choice == 1)
-                {
-                    StartGame();
-                    GameMenu();
-                    InitialiseGame(game_vars);
-                }
-                else if (Choice == 2)
-                {
-                    LoadSaved();
-                    GameMenu();
-                    InitialiseGame(game_vars);
-                }
-                else if (Choice == 3)
-                {
-                    Displayhighscore();
-                }
-                else if (Choice == 0)
-                {
-                    ExitGame();
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("This option is not available.");
-                }
+            void ExitGame()
+            {
+
+                Console.WriteLine("Exiting Ngee Ann City. Hope to see you again!\n");
+            }
+
+
+            //-------------------------------------------------------------------------------------
+            //                                    MAIN GAME
+            //-------------------------------------------------------------------------------------
+
+            while (true)
+            {
 
 
 
-                while (Choice == 1^ Choice == 2)
+                Menu();
+                Console.Write("Select Option: ");
+                try
                 {
-                    
 
+                    int Choice = Convert.ToInt32(Console.ReadLine());
 
-                    Console.Write("Please choose your option: ");
-                    try
+                    if (Choice == 1)
                     {
-                        int choice = Convert.ToInt32(Console.ReadLine());
-                        if (choice == 1)
-                        {
-                            Console.Write("Where would you like to place " + building1 + ": ");
-                            string position = Console.ReadLine();
+                        StartGame();
+                        GameMenu();
+                        InitialiseGame(game_vars);
+                    }
+                    else if (Choice == 2)
+                    {
+                        LoadSaved();
+                        GameMenu();
+                        InitialiseGame(game_vars);
+                    }
+                    else if (Choice == 3)
+                    {
+                        Displayhighscore();
+                    }
+                    else if (Choice == 0)
+                    {
+                        ExitGame();
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("This option is not available.");
+                    }
 
-                            // Ensure field is initialized before calling PlaceBuilding
-                            if (field != null)
+
+
+                    while (Choice == 1 ^ Choice == 2)
+                    {
+
+
+
+                        Console.Write("Please choose your option: ");
+                        try
+                        {
+                            int choice = Convert.ToInt32(Console.ReadLine());
+                            if (choice == 1)
                             {
-                                PlaceBuilding(building1, position, field);
-                                GameMenu();
+                                Console.Write("Where would you like to place " + building1 + ": ");
+                                string position = Console.ReadLine();
+
+                                // Ensure field is initialized before calling PlaceBuilding
+                                if (field != null)
+                                {
+                                    PlaceBuilding(building1, position, field);
+                                    GameMenu();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Field is not initialized. Cannot place the building.");
+                                    GameMenu();
+                                }
+
+                            }
+                            else if (choice == 2)
+                            {
+                                Console.Write("Where would you like to place " + building2 + ": ");
+                                string position = Console.ReadLine();
+
+                                // Ensure field is initialized before calling PlaceBuilding
+                                if (field != null)
+                                {
+                                    PlaceBuilding(building2, position, field);
+                                    GameMenu();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Field is not initialized. Cannot place the building.");
+                                    GameMenu();
+                                }
+                            }
+                            else if (choice == 0)
+                            {
+                                Console.Write("Would you like to save your game? (y/n): ");
+                                string option = Console.ReadLine();
+                                if (option == "y")
+                                {
+                                    SaveGame();
+                                    Console.WriteLine("Thanks for playing!");
+                                    break;
+                                }
+                                else if (option == "n")
+                                {
+                                    ExitGame();
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Please enter valid option");
+                                }
                             }
                             else
                             {
-                                Console.WriteLine("Field is not initialized. Cannot place the building.");
-                                GameMenu();
-                            }
-
-                        }
-                        else if (choice == 2)
-                        {
-                            Console.Write("Where would you like to place " + building2 + ": ");
-                            string position = Console.ReadLine();
-
-                            // Ensure field is initialized before calling PlaceBuilding
-                            if (field != null)
-                            {
-                                PlaceBuilding(building2, position, field);
-                                GameMenu();
-                            }
-                            else
-                            {
-                                Console.WriteLine("Field is not initialized. Cannot place the building.");
-                                GameMenu();
+                                Console.WriteLine("Please enter a number");
                             }
                         }
-                        else if (choice == 0)
-                        {
-                            Console.Write("Would you like to save your game? (y/n): ");
-                            string option = Console.ReadLine();
-                            if (option == "y")
-                            {
-                                SaveGame();
-                                Console.WriteLine("Thanks for playing!");
-                                break;
-                            }
-                            else if (option == "n")
-                            {
-                                ExitGame();
-                                break;
-                            }
-                            else
-                            {
-                                Console.WriteLine("Please enter valid option");
-                            }
-                        }
-                        else
+                        catch
                         {
                             Console.WriteLine("Please enter a number");
                         }
                     }
-                    catch
-                    {
-                        Console.WriteLine("Please enter a number");
-                    }
                 }
-            }
-            catch
-            {
-                Console.WriteLine("Please enter a number");
+                catch
+                {
+                    Console.WriteLine("Please enter a number");
+                }
             }
         }
     }
-}
