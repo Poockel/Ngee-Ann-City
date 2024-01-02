@@ -177,11 +177,11 @@ public class Program
         // InitialiseGame()
         // Sets the default game variables for new game
         void InitialiseGame(IDictionary<string, int> game_vars)
-        {/*
+        {
             game_vars["num_buildings"] = 0;
             game_vars["coins"] = 16;
             game_vars["score"] = 0;
-            game_vars["turn"] = 1;*/
+            game_vars["turn"] = 1;
         }
 
         // StartGame()
@@ -487,7 +487,6 @@ public class Program
                     {
                         LoadSaved();
                         GameMenu();
-                        InitialiseGame(game_vars);
                     }
                     else if (Choice == 3)
                     {
