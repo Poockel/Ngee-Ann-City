@@ -123,8 +123,10 @@ public class Program
         {
             char[] bpos = pos.ToCharArray();
 
-            int row = bpos[0] - 'A';
+            int row = Char.ToUpper(bpos[0]) - 'A';
             int col = int.Parse(pos.Substring(1)) - 1;
+            Console.WriteLine(row);
+            Console.WriteLine(col);
 
             if (row >= 0 && row < field.Length && col >= 0 && col < field[0].Length && field[row][col] == null)
             {
@@ -175,11 +177,11 @@ public class Program
         // InitialiseGame()
         // Sets the default game variables for new game
         void InitialiseGame(IDictionary<string, int> game_vars)
-        {
+        {/*
             game_vars["num_buildings"] = 0;
             game_vars["coins"] = 16;
             game_vars["score"] = 0;
-            game_vars["turn"] = 1;
+            game_vars["turn"] = 1;*/
         }
 
         // StartGame()
@@ -514,7 +516,7 @@ public class Program
                             int choice = Convert.ToInt32(Console.ReadLine());
                             if (choice == 1)
                             {
-                                Console.Write("Where would you like to place " + building1 + ": ");
+                                Console.Write("Where would you like to place " + building1.Key + "(" + building1.Value + ")" + ": ");
                                 string position = Console.ReadLine();
 
                                 // Ensure field is initialized before calling PlaceBuilding
@@ -533,7 +535,7 @@ public class Program
                         }
                         else if (choice == 2)
                         {
-                            Console.Write("Where would you like to place " + building2 + ": ");
+                            Console.Write("Where would you like to place " + building2.Key + "(" + building2.Value + ")" + ": ");
                             Console.ReadLine();
                         }
                         else if (choice == 0)
