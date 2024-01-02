@@ -334,7 +334,6 @@ public class Program
                                     if (field != null)
                                     {
                                         PlaceBuilding(building1.Value, position, field);
-                                        game_vars["turn"] += 1;
                                         GameMenu();
                                     }
                                     else
