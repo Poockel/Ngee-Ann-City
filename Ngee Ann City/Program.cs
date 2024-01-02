@@ -144,8 +144,8 @@ public class Program
         // Displays game menu
         void GameMenu()
         {
-            char newBuilding1 = RandomBuidling(buildings);
-            char newBuilding2 = RandomBuidling(buildings);
+            KeyValuePair<string, char>  newBuilding1 = RandomBuilding(buildings);
+            KeyValuePair<string, char>  newBuilding2 = RandomBuilding(buildings);
             building1 = newBuilding1;
             building2 = newBuilding2;
 
@@ -520,7 +520,8 @@ public class Program
                                 // Ensure field is initialized before calling PlaceBuilding
                                 if (field != null)
                                 {
-                                    PlaceBuilding(building1, position, field);
+                                    PlaceBuilding(building1.Value, position, field);
+                                    game_vars["turn"] ++;
                                     GameMenu();
                                 }
                                 else
