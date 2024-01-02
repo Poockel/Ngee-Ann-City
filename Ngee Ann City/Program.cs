@@ -264,8 +264,8 @@ public class Program
             {
                 try
                 {
-                    //int OptionB = Convert.ToInt32(Console.ReadLine());
-                    //return OptionB;
+                    int OptionB = Convert.ToInt32(Console.ReadLine());
+                    return OptionB;
                 }
                 catch
                 {
@@ -321,7 +321,7 @@ public class Program
                         int OptionB = Build();
                         if (OptionB == 1)
                         {
-                            //Console.Write("Please choose your option: ");
+                            Console.Write("Please choose your option: ");
                             try
                             {
                                 int choice = Convert.ToInt32(Console.ReadLine());
@@ -334,6 +334,7 @@ public class Program
                                     if (field != null)
                                     {
                                         PlaceBuilding(building1.Value, position, field);
+                                        game_vars["turn"] += 1;
                                         GameMenu();
                                     }
                                     else
