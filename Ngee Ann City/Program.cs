@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
+
+
 public class Program
 {
     static char?[][] field;
@@ -53,7 +55,7 @@ public class Program
         // Draws a 20x20 field to place buildings
         static void ShowField(char?[][] field)
         {
-            Console.Write("    ");
+            Console.Write("  ");
             for (int i = 1; i <= field[0].Length; i++)
             {
                 Console.Write(string.Format("{0,4}", $"{i,3}"));
@@ -62,15 +64,16 @@ public class Program
 
             for (int i = 0; i < field.Length; i++)
             {
-                Console.Write((char)('A' + i) + "   ");
-
+                Console.Write("   ");
                 for (int j = 0; j < field[i].Length; j++)
                 {
                     Console.Write("+---");
                 }
                 Console.WriteLine("+");
 
-                Console.Write("    ");
+                Console.Write((char)('A' + i));
+
+                Console.Write("  ");
                 for (int j = 0; j < field[i].Length; j++)
                 {
                     if (field[i][j] == null)
@@ -85,7 +88,7 @@ public class Program
                 Console.WriteLine("|");
             }
 
-            Console.Write("    ");
+            Console.Write("   ");
             for (int j = 0; j < field[0].Length; j++)
             {
                 Console.Write("+---");
@@ -125,8 +128,6 @@ public class Program
 
             int row = Char.ToUpper(bpos[0]) - 'A';
             int col = int.Parse(pos.Substring(1)) - 1;
-            Console.WriteLine(row);
-            Console.WriteLine(col);
 
             if (row >= 0 && row < field.Length && col >= 0 && col < field[0].Length && field[row][col] == null)
             {
@@ -165,13 +166,13 @@ public class Program
         // Displays start menu
         void Menu()
         {
-            Console.WriteLine("Welcome to Ngee Ann City!");
-            Console.WriteLine("------------------------");
-            Console.WriteLine("1. Start a new game");
-            Console.WriteLine("2. Load saved game");
-            Console.WriteLine("3. Display high scores");
-            Console.WriteLine("0. Exit game");
-            Console.WriteLine("------------------------");
+            Console.WriteLine("                                                        Welcome to Ngee Ann City!");
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("                                                         1. Start a new game");
+            Console.WriteLine("                                                         2. Load saved game");
+            Console.WriteLine("                                                         3. Display high scores");
+            Console.WriteLine("                                                         0. Exit game");
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------------");
         }
 
         // InitialiseGame()
@@ -263,9 +264,9 @@ public class Program
                 }
 
                 // Apply scoring rules for Residential buildings
-                if (isAdjacentToIndustry)
+                if (isAdjacentToIndustry == true)
                 {
-                    game_vars["score"] += 1; // Score 1 point if next to Industry
+                    game_vars["score"] ++ ; // Score 1 point if next to Industry
                 }
                 else
                 {
@@ -273,7 +274,7 @@ public class Program
                     game_vars["score"] += adjacentParks * 2; // 2 points for each adjacent Park
                 }
             }
-            else if (building == 'I') // Industry
+            if (building == 'I') // Industry
             {
                 game_vars["score"] += 1; // Score 1 point per industry in the city
 
@@ -287,14 +288,14 @@ public class Program
                             char? adjacentBuilding = field[i][j];
                             if (adjacentBuilding == 'R')
                             {
-                                game_vars["coins"]++; // Generate 1 coin per adjacent residential building to Industry
+                                game_vars["coins"]+=1; // Generate 1 coin per adjacent residential building to Industry
                             }
                         }
                     }
                 }
             }
 
-            else if (building == 'C') // Commercial
+            if (building == 'C') // Commercial
             {
                 game_vars["score"] += 1; // Score 1 point for Commercial building
 
@@ -310,12 +311,16 @@ public class Program
                             {
                                 game_vars["coins"]++; // Generate 1 coin per adjacent residential building to Commercial
                             }
+                            else if (adjacentBuilding == 'C')
+                            {
+                                game_vars["score"]++;
+                            }
                         }
                     }
                 }
             }
 
-            else if (building == 'O') // Park
+            if (building == 'O') // Park
             {
                 bool hasAdjacentPark = false;
 
@@ -338,14 +343,14 @@ public class Program
                 }
 
                 // Score points only if adjacent to another Park
-                if (hasAdjacentPark)
+                if (hasAdjacentPark==true)
                 {
                     game_vars["score"] += 1; // Score 1 point for Park building
                 }
             }
 
 
-            else if (building == '*') // Road
+            if (building == '*') // Road
             {
                 int roadLength = 0;
                 for (int j = col; j < field[row].Length && field[row][j] == '*'; j++)
@@ -467,9 +472,6 @@ public class Program
 
             while (true)
             {
-
-
-
                 Menu();
                 Console.Write("Select Option: ");
                 try
@@ -506,9 +508,6 @@ public class Program
 
                     while (Choice == 1 ^ Choice == 2)
                     {
-
-
-
                         Console.Write("Please choose your option: ");
                         try
                         {
@@ -522,7 +521,8 @@ public class Program
                                 if (field != null)
                                 {
                                     PlaceBuilding(building1.Value, position, field);
-                                    game_vars["turn"] ++;
+                                    game_vars["turn"]++;
+                                    game_vars["coins"]--;
                                     GameMenu();
                                 }
                                 else
@@ -530,32 +530,45 @@ public class Program
                                     Console.WriteLine("Field is not initialized. Cannot place the building.");
                                     GameMenu();
                                 }
-
-                        }
-                        else if (choice == 2)
-                        {
-                            Console.Write("Where would you like to place " + building2.Key + "(" + building2.Value + ")" + ": ");
-                            Console.ReadLine();
-                        }
-                        else if (choice == 0)
-                        {
-                            Console.Write("Would you like to save your game? (y/n): ");
-                            string option = Console.ReadLine();
-                            if (option == "y")
-                            {
-                                SaveGame();
-                                Console.WriteLine("Thanks for playing!");
-                                break;
                             }
-                            else if (option == "n")
+                            else if (choice == 2)
                             {
-                                ExitGame();
-                                break;
+                                Console.Write("Where would you like to place " + building2.Key + "(" + building2.Value + ")" + ": ");
+                                string position = Console.ReadLine();
+                                if (field != null)
+                                {
+                                    PlaceBuilding(building1.Value, position, field);
+                                    game_vars["turn"]++;
+                                    game_vars["coins"]--;
+                                    GameMenu();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Field is not initialized. Cannot place the building.");
+                                    GameMenu();
+                                }
                             }
-                            else
+                            else if (choice == 0)
                             {
-                                Console.WriteLine("Please enter valid option");
-                            }
+                                Console.Write("Would you like to save your game? (y/n): ");
+                                string option = Console.ReadLine();
+                                if (option == "y")
+                                {
+                                    SaveGame();
+                                    RecordScore(game_vars["score"]);
+                                    Console.WriteLine("Thanks for playing!");
+                                    break;
+                                }
+                                else if (option == "n")
+                                {
+                                    RecordScore(game_vars["score"]);
+                                    ExitGame();
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Please enter valid option");
+                                }
                         }
                         else
                         {
