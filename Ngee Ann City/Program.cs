@@ -564,17 +564,17 @@ public class Program
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Please enter valid option");
+                                    Console.WriteLine("Please enter valid option.");
                                 }
                         }
                         else
                         {
-                            Console.WriteLine("Please enter a number");
+                            Console.WriteLine("Please enter a number.");
                         }
                     }
                     catch
                     {
-                        Console.WriteLine("Please enter a number");
+                        Console.WriteLine("Please enter a valid option.");
                     }
                 }
             }
