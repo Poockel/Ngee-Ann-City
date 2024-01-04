@@ -17,17 +17,17 @@ public class Program
     {
         // Set game variables
         IDictionary<string, int> game_vars = new Dictionary<string, int>();
-        game_vars.Add("num_buildings", 0);
+        game_vars.Add("num_buildings", 2);
         game_vars.Add("coins", 16);
         game_vars.Add("score", 0);
         game_vars.Add("turn", 1);
 
         IDictionary<string, char> buildings = new Dictionary<string, char>();
-        buildings.Add("Residential",'R');
-        buildings.Add("Commercial",'C');
-        buildings.Add("Industry",'I');
-        buildings.Add("Park",'O');
-        buildings.Add("Road",'*');
+        buildings.Add("Residential", 'R');
+        buildings.Add("Commercial", 'C');
+        buildings.Add("Industry", 'I');
+        buildings.Add("Park", 'O');
+        buildings.Add("Road", '*');
 
 
 
@@ -98,7 +98,7 @@ public class Program
 
         // RandomBuilding()
         // Function to get a random building from the buidlings list
-        static KeyValuePair<TKey, TValue> RandomBuilding<TKey, TValue>(IDictionary<TKey,TValue> dict)
+        static KeyValuePair<TKey, TValue> RandomBuilding<TKey, TValue>(IDictionary<TKey, TValue> dict)
         {
             Random random = new Random();
             int index = random.Next(0, dict.Count);
@@ -129,17 +129,11 @@ public class Program
             int row = Char.ToUpper(bpos[0]) - 'A';
             int col = int.Parse(pos.Substring(1)) - 1;
 
-            if (row >= 0 && row < field.Length && col >= 0 && col < field[0].Length && field[row][col] == null)
-            {
-                field[row][col] = building;
-                Console.WriteLine("Building placed at position " + pos);
-                CalculateScore(field, row, col, game_vars);
-                ShowField(field); // Display the field after placing the building
-            }
-            else
-            {
-                Console.WriteLine("Invalid position or position already occupied. Please choose another position.");
-            }
+
+            field[row][col] = building;
+            Console.WriteLine("Building placed at position " + pos);
+            CalculateScore(field, row, col, game_vars);
+            ShowField(field); // Display the field after placing the building
         }
 
 
@@ -147,8 +141,8 @@ public class Program
         // Displays game menu
         void GameMenu()
         {
-            KeyValuePair<string, char>  newBuilding1 = RandomBuilding(buildings);
-            KeyValuePair<string, char>  newBuilding2 = RandomBuilding(buildings);
+            KeyValuePair<string, char> newBuilding1 = RandomBuilding(buildings);
+            KeyValuePair<string, char> newBuilding2 = RandomBuilding(buildings);
             building1 = newBuilding1;
             building2 = newBuilding2;
 
@@ -399,7 +393,7 @@ public class Program
 
                 else if (sortedScores.Count == 0)
                 {
-                    Console.Write("No high score records found :("+"\n\n");
+                    Console.Write("No high score records found :(" + "\n\n");
                 }
             }
             catch (Exception e)
@@ -409,43 +403,43 @@ public class Program
         }
 
 
-            void SaveGame()
+        void SaveGame()
+        {
+            string path = "saved_game.json";
+            var gamedata = new
             {
-                string path = "saved_game.json";
-                var gamedata = new
-                {
-                    GameVar = game_vars,
-                    Field = field
-                };
+                GameVar = game_vars,
+                Field = field
+            };
 
-                try
-                {
-                    // Serialize game state to JSON
-                    string gameJson = Newtonsoft.Json.JsonConvert.SerializeObject(gamedata);
-
-                    // Write the serialized game state to the file
-                    File.WriteAllText(path, gameJson);
-                    Console.Write("Your final score is: " + game_vars["score"] + "   \n");
-                    Console.WriteLine("Game saved successfully!");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error saving the game: " + e.Message);
-                }
-            }
-
-            void ExitCurrentGame()
+            try
             {
+                // Serialize game state to JSON
+                string gameJson = Newtonsoft.Json.JsonConvert.SerializeObject(gamedata);
 
+                // Write the serialized game state to the file
+                File.WriteAllText(path, gameJson);
                 Console.Write("Your final score is: " + game_vars["score"] + "   \n");
-                Console.WriteLine("Exiting the game. Goodbye!\n");
+                Console.WriteLine("Game saved successfully!");
             }
-
-            void ExitGame()
+            catch (Exception e)
             {
-
-                Console.WriteLine("Exiting Ngee Ann City. Hope to see you again!\n");
+                Console.WriteLine("Error saving the game: " + e.Message);
             }
+        }
+
+        void ExitCurrentGame()
+        {
+
+            Console.Write("Your final score is: " + game_vars["score"] + "   \n");
+            Console.WriteLine("Exiting the game. Goodbye!\n");
+        }
+
+        void ExitGame()
+        {
+
+            Console.WriteLine("Exiting Ngee Ann City. Hope to see you again!\n");
+        }
 
         int Build()
         {
@@ -466,18 +460,21 @@ public class Program
             }
         }
 
-            //-------------------------------------------------------------------------------------
-            //                                    MAIN GAME
-            //-------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------
+        //                                    MAIN GAME
+        //-------------------------------------------------------------------------------------
 
             while (true)
             {
+
+
+
                 Menu();
                 Console.Write("Select Option: ");
                 try
                 {
 
-                    int Choice = Convert.ToInt32(Console.ReadLine());
+                int Choice = Convert.ToInt32(Console.ReadLine());
 
                     if (Choice == 1)
                     {
