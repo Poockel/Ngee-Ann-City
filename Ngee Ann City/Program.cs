@@ -58,7 +58,16 @@ public class Program
             Console.Write("  ");
             for (int i = 1; i <= field[0].Length; i++)
             {
-                Console.Write(string.Format("{0,4}", $"{i,3}"));
+
+                if (i < 10) 
+                {
+                    Console.Write(string.Format("{0,4}", $"{i,3}"));
+                }
+                else
+                {
+                    Console.Write(string.Format("{0,4}", $"{i,4}"));
+                }
+
             }
             Console.WriteLine();
 
