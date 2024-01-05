@@ -182,7 +182,7 @@ public class Program
         // Sets the default game variables for new game
         void InitialiseGame(IDictionary<string, int> game_vars)
         {
-            game_vars["num_buildings"] = 0;
+            game_vars["num_buildings"] = 2;
             game_vars["coins"] = 16;
             game_vars["score"] = 0;
             game_vars["turn"] = 1;
@@ -529,6 +529,7 @@ public class Program
                                     PlaceBuilding(building1.Value, position, field);
                                     game_vars["turn"]++;
                                     game_vars["coins"]--;
+                                    game_vars["num_buildings"]++;
                                     GameMenu();
                                 }
                                 else
@@ -546,6 +547,7 @@ public class Program
                                     PlaceBuilding(building1.Value, position, field);
                                     game_vars["turn"]++;
                                     game_vars["coins"]--;
+                                    game_vars["num_buildings"]++;
                                     GameMenu();
                                 }
                                 else
